@@ -1,0 +1,12 @@
+
+div .detail {
+	padding: .5em;
+}
+
+div .detailItem {
+	padding-left: 1.5em
+}
+
+.form-control {
+  cursor: text !important;
+}

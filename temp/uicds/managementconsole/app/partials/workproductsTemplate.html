@@ -1,0 +1,272 @@
+	<div id="workproducts">
+	<!-- container header -->
+
+	<!-- row -->
+  	<div class="row">
+
+		<!-- view navigation -->
+		<div class="col-md-3">
+
+			<!-- action menu -->
+			<div>
+				<ul class="nav nav-pills">
+				  <li class="dropdown">
+				    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+				      Action <b class="caret"></b>
+				    </button>
+				    <ul class="dropdown-menu">
+				    	<li ng-if="viewType=='byInterestGroup'" ng-click="closeSelectedIncidents(); refresh()"><a>Close Selected Incidents</a></li>
+				    	<li ng-if="viewType=='byInterestGroup'" ng-click="closeAndArchiveSelectedIncidents();"><a>Close and Archive Selected Incidents</a></li>
+				    	<li ng-if="viewType=='byInterestGroup'" class="divider"></li>
+				    	<li ng-click="viewJSON();"><a>View as JSON</a></li>
+				 		<li><a target="_blank" href="/uicds/pub/search?format=xml&productID={{workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text}}&full=true">View as XML</a></li>
+				 		<li class="divider"></li>
+						<li ng-click="refresh(viewType)"><a>Refresh</a></li>
+				    </ul>
+				  </li>
+					  <li>
+					    <button type="button" class="btn btn-primary navbar-btn " ng-click="refresh(viewType)" >
+					      <b class="glyphicon glyphicon-refresh"></b>
+					    </button>	 
+					  </li>				  
+				</ul>
+				<div>
+					<div class="btn-group btn-group-justified" data-toggle="buttons">
+					  <label ng-click="refresh('byInterestGroup')" class="btn btn-default">
+					    <input type="radio" name="incidents" id="incidents">Incidents</label>
+					  <label ng-click="refresh('byAlert')" class="btn btn-default">
+					    <input type="radio" name="viewType" id="alerts">Alerts</label>
+					  <label ng-click="refresh('byType')" class="btn btn-default">
+					    <input type="radio" name="viewType" id="all">All</label>
+					</div>
+					<!-- paging controls -->
+					<div class="clearfix" style="padding-top: 5px; padding-bottom: 5px;">
+						<a class="pull-left" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span> prev</a>
+						<a class="pull-right" ng-click="next()">next <span class="glyphicon glyphicon-chevron-right"></span></a>
+						<div style="text-align: center">
+							Show <select ng-model="limit" ng-change="refresh(viewType)">
+							  <option value="1">1</option>
+							  <option value="5">5</option>
+							  <option value="10">10</option>
+							  <option value="25">25</option>
+							  <option value="50">50</option>
+							</select>
+							{{startIndex}}
+						</div>
+					</div>					  
+				</div>
+			</div>
+			
+			<!-- workproduct list -->
+
+			<div ng-if="viewType=='byInterestGroup'" ng-repeat="workproduct in workproducts | byType:'Incident' " class="panel-group" id="accordion">
+
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title" ng-click="select(workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)">
+							<!-- this checkbox is for multi-select -->
+					      	<input class="pull-right" type="checkbox" ng-model="workproduct.checked" ng-change="multiSelect(workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)" />						    
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse{{workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text}}">+
+								{{workproduct.Digest[0].Event[0].Identifier[0].text}}</a><br />
+								<small>what: <span ng-repeat="what in workproduct.Digest[0].Event[0].What">{{what.attr.code.value}} </span> </small>
+								  <br /> 	
+								  <small>
+								owner: {{workproduct.PackageMetadata[0].WorkProductProperties[0].CreatedBy[0].text}} <br />
+								updated: {{workproduct.PackageMetadata[0].WorkProductProperties[0].LastUpdated[0].text}}
+								</small>
+
+					    </h4>
+				    </div>
+				
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse{{workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text}}" class="panel-collapse collapse">
+				      <div class="panel-body">
+				      <small>
+				        <b>Associated WorkProducts:</b> <br />
+					        <ul ng-repeat="associatedwp in workproducts | byInterestGroup:workproduct.PackageMetadata[0].WorkProductProperties[0].AssociatedGroups[0].Identifier[0].text" style="cursor:default">
+					        	<li><a ng-click="select(associatedwp.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)">{{associatedwp.PackageMetadata[0].WorkProductIdentification[0].Type[0].text}}</a></li>
+					  	    </ul>
+
+				        </small>
+				      </div>
+				    </div> 
+
+				</div>
+			</div> <!-- workproduct list -->
+
+
+			<div ng-if="viewType=='byAlert'" ng-repeat="workproduct in workproducts | byType:'Alert' " class="panel-group" id="accordion">
+
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title" ng-click="select(workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)">
+							<!-- this checkbox is for multi-select -->
+					      	<input class="pull-right" type="checkbox" ng-model="workproduct.checked" ng-change="multiSelect(workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)" />						    
+					    	
+								{{workproduct.Digest[0].Event[0].Identifier[0].text}}</a><br />
+								<small>what: <span ng-repeat="what in workproduct.Digest[0].Event[0].What">{{what.attr.code.value}} </span> </small>
+								  <br /> 	
+								  <small>
+								owner: {{workproduct.PackageMetadata[0].WorkProductProperties[0].CreatedBy[0].text}} <br />
+								updated: {{workproduct.PackageMetadata[0].WorkProductProperties[0].LastUpdated[0].text}}
+								</small>
+
+								<div style="text-align: center; padding-top: 5px">
+					      	<small >
+					      	{{workproduct.StructuredPayload[0].alert[0].info[0].urgency[0].text}} |
+					      	{{workproduct.StructuredPayload[0].alert[0].info[0].certainty[0].text}} |
+					      	{{workproduct.StructuredPayload[0].alert[0].info[0].severity[0].text}} 
+					        </small>
+					        </div>
+
+					    </h4>
+				    </div>
+				</div>
+			</div> <!-- workproduct list -->
+
+
+			<div ng-if="viewType=='byType'" ng-repeat="type in productTypes " class="panel-group" id="accordion">
+				<div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title">			    
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse{{type}}">+
+								{{type}}</a>
+					    </h4>
+				    </div>
+
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse{{type}}" class="panel-collapse collapse">
+				      <div class="panel-body">
+				      <small>
+				      		<ul ng-repeat="workproduct in workproducts | byType:type">
+								<li><a ng-click="select(workproduct.PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text)">
+									{{workproduct.name}}
+								</a></li>
+							</ul>
+				        </small>
+				      </div>
+				    </div> 
+				</div>
+			</div>
+
+		</div>  <!-- navigation  -->
+
+
+		<!-- detail view -->
+		<div class="col-md-9" ng-show="workproducts[selectedID]">
+
+			<div class="detail">
+				<h3><span>{{workproducts[selectedID].name}} :</span>
+				<span> {{workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Type[0].text}} Document</span>
+				</h3>
+				<div class="detailItem">
+
+					<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="id">ID</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text" class="form-control" id="id"/>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="state">State</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].State[0].text" class="form-control" id="state"/>
+						    </div>
+						  </div>						  
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="version">Version</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Version[0].text" class="form-control" id="version"/>
+						    </div>
+						  </div>		
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="associated">Associated With</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].AssociatedGroups[0].Identifier[0].text" class="form-control" id="associated"/>
+						    </div>
+						  </div>						  			  
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="created-by">Created By</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].CreatedBy[0].text" class="form-control" id="created-by"/>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="created-at">Created At</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].Created[0].text" class="form-control" id="created-at"/>
+						    </div>
+						  </div>	
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="updated-by">Last Updated By</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].LastUpdatedBy[0].text" class="form-control" id="updated-by"/>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="updated-at">Last Updated At</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].LastUpdated[0].text" class="form-control" id="updated-at"/>
+						    </div>
+						  </div>
+						  <div class="form-group" ng-if="workproducts[selectedID].Digest[0].Location[0]">
+						    <label class="col-sm-2 control-label" for="location">Location</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].Digest[0].Location[0].GeoLocation[0].CircleByCenterPoint[0].CircleByCenterPoint[0].pos[0].text" class="form-control" id="location"/>
+						    </div>
+						  </div>
+						  <div class="form-group" ng-if="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Type[0].text == 'Incident'">
+						    <label class="col-sm-2 control-label" for="incidentType">Incident Type</label>
+						    <div class="col-sm-10">
+						    	<input readonly type="text" ng-model="workproducts[selectedID].Digest[0].Event[0].What[0].attr.code.value" class="form-control" id="incidentType"/>
+						    </div>
+						  </div>						  
+					</form>
+<!-- 					<table >
+						<tr><td class="text-right smlabel">ID : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Identifier[0].text}}</td></tr>
+						<tr ><td class="text-right smlabel">Version : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Version[0].text}}</td></tr>		
+						<tr class='border_bottom'><td class="text-right smlabel">State : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].State[0].text}}</td></tr>
+						<tr><td class="text-right smlabel">Created by : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].CreatedBy[0].text}}</td></tr>
+						<tr><td class="text-right smlabel">Created at : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].Created[0].text}}</td></tr>
+						<tr><td class="text-right smlabel">Last updated by : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].LastUpdatedBy[0].text}}</td></tr>
+						<tr><td class="text-right smlabel">Last updated at : </td><td> {{workproducts[selectedID].PackageMetadata[0].WorkProductProperties[0].LastUpdated[0].text}}</td></tr>
+					</table> -->
+						<!-- <div class="detail" ng-show="workproducts[selectedID].Digest[0].Location[0].GeoLocation[0].CircleByCenterPoint[0].CircleByCenterPoint[0].pos[0].text">
+							<b>Location: </b> {{workproducts[selectedID].Digest[0].Location[0].GeoLocation[0].CircleByCenterPoint[0].CircleByCenterPoint[0].pos[0].text}}
+						</div>	 -->
+									<!-- 				<div class="detailItem">
+								<img style="width: auto;" src="http://maps.googleapis.com/maps/api/staticmap?center={{workproducts[selectedID].Digest[0].Location[0].GeoLocation[0].CircleByCenterPoint[0].CircleByCenterPoint[0].pos[0].text}}&markers=size:mid%7Ccolor:red%7C{{workproducts[selectedID].Digest[0].Location[0].GeoLocation[0].CircleByCenterPoint[0].CircleByCenterPoint[0].pos[0].text}}&zoom=7&size=600x200&sensor=false" />
+							</div> -->						
+				</div>
+			</div>
+
+
+			<div class="detail" ng-show="workproducts[selectedID].Digest[0].Event[0].Descriptor[0].text">
+				<b>Description </b>
+				<div class="detailItem">
+					<div ng-bind-html="workproducts[selectedID].Digest[0].Event[0].Descriptor[0].text"></div>
+				</div>
+			</div>
+
+			<div class="detail">
+				<span ng-if="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].Type[0].text != 'Incident'">
+					<span ng-if="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].State[0].text == 'Active'">
+					 	<a target="_blank" ng-click="closeWorkProduct(workproducts[selectedID])" class="btn btn-primary">Close WorkProduct</a>
+<!-- 					 	<a target="_blank" ng-click="closeAndArchiveWorkProduct(workproducts[selectedID])" class="btn btn-primary">Close and Archive WorkProduct</a>
+ -->				
+ 					</span>
+					<span ng-if="workproducts[selectedID].PackageMetadata[0].WorkProductIdentification[0].State[0].text == 'Inactive'">
+					 	<a target="_blank" ng-click="archiveWorkProduct(workproducts[selectedID])" class="btn btn-primary">Archive WorkProduct</a>		
+					</span>
+				</span>
+			</div>
+
+		</div> <!-- detail view -->
+
+	</div> <!-- row -->
+
+</div> <!-- container -->
+

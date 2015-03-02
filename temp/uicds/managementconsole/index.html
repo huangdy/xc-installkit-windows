@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Management Console</title>
+
+		<!-- load bootstrap css -->
+		<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+		<!-- HTML5 shim and respond.js, for IE6-8 support of HTML5 elements and CSS media queries -->
+		<!--[if lt IE 9]>
+		  <script src="libs/html5shiv/html5shiv.js"></script>
+		  <script src="libs/respond/respond.min.js"></script>
+		<![endif]-->
+
+		<!-- load jQuery -->
+		<script type="text/javascript" src="lib/jquery/jquery-1.11.0.min.js"></script>
+
+		<!-- load the Angular.js library -->
+		<script type="text/javascript" src="lib/angular/angular.min.js"></script>
+		<script type="text/javascript" src="lib/angular/angular-route.js"></script>
+		<script type="text/javascript" src="lib/angular/angular-sanitize.js"></script>
+
+		<!-- load the twitter bootstrap javascript (depends on jQuery) -->
+		<script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+
+		<!-- load the console app -->
+		<script type="text/javascript" src="app/app.js"></script>
+		<script type="text/javascript" src="app/js/services.js"></script>
+		<script type="text/javascript" src="app/js/controllers.js"></script>
+		<script type="text/javascript" src="app/js/filters.js"></script>
+		<script type="text/javascript" src="app/js/directives.js"></script>
+		<link href="app/css/app.css" rel="stylesheet" media="screen">
+
+		<!-- supporting libs -->
+		<script type="text/javascript" src="lib/xmlToJSON/xmlToJSON.min.js"></script>  
+		<script type="text/javascript" src="lib/logout/logout.js"></script>
+        <script type="text/javascript" src="lib/mustache/mustache.js"></script>
+		<script type="text/javascript" src="util.js"></script>
+
+	</head>
+
+	<body ng-app="consoleApp" id="ng-app">
+
+		<div class="container page">
+
+		    <!-- navbar -->
+			<div class="navbar navbar-default" role="navigation">
+
+			  	<div class="container">
+
+						<span style="font-size: 1.5em" class="navbar-text" href="#status">
+						<b>{{consoleTitle}} [{{fqdn}}] : {{pageTitle}}</b></span>
+						<ul class="nav navbar-nav navbar-right" style="padding-right: 60px">
+						  <li class="dropdown">
+						    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+						      Menu <b class="caret"></b>
+						    </button>
+						    <ul class="dropdown-menu">
+								<li ng-class="{active: currentRoute=='status'}">
+								  <a href="#status" data-toggle="pill">Core Status [Home]</a>
+								</li>	
+								<li ng-class="{active: currentRoute=='workproducts'}">
+								  <a href="#workproducts" data-toggle="pill">Incidents and Work Products</a>
+								</li>									
+								<li ng-class="{active: currentRoute=='agreements'}">
+								  <a href="#agreements" data-toggle="pill">Sharing Agreements</a>
+								</li>						    
+								<li ng-class="{active: currentRoute=='users'}">
+								  <a href="#users" data-toggle="pill">Groups and Users</a>
+								</li>		
+								<li ng-class="{active: currentRoute=='instances'}">
+								  <a href="#instances" data-toggle="pill">Resource Profiles and Instances</a>
+								</li>	
+								<li role="presentation" class="divider"></li>
+								<li ng-class="{active: currentRoute=='docs'}">
+								  <a href="#docs" data-toggle="pill">Documentation</a>
+								</li>								
+								<li role="presentation" class="divider"></li>
+								<li >
+								  <a href="javascript:logout()">Logout</a>
+								</li>									
+						    </ul>
+						  </li>
+						</ul>
+
+				</div>
+			</div>
+
+			<!-- content placeholder -->
+			<div ng-view></div> 
+
+		</div> <!-- page container -->
+
+	</body>
+
+</html>

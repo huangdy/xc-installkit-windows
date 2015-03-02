@@ -1,0 +1,4 @@
+method=xml
+mediatype=application/xml
+xquery=rss.xq
+modulens=http://uicds.org/modules/transform/rss

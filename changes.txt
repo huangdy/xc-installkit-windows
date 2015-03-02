@@ -1,0 +1,26 @@
+
+TODO:
+------
+* All tools which using %BRANDING% ref need to be updated with regex script to include
+correct brand reference
+
+CHANGES: 
+---------
+Server/Version changes:
+updated both 32-bit and 64-bit installs
+opendj - update to 2.7.0
+openfire - update to 3.8.2
+apache tomcat - update to 7.0.42
+exist - removed
+ms sql server express - added, version 2012 (no tools)
+apache active mq - added, version 5.9.0
+
+General:
+defined base file names to ease version changes later
+removed most UICDS references from setup.bat and replaced with %BRANDING% variable
+some uicds references are core related and cannot yet be altered
+UICDS_HOME is now INSTALL_HOME
+UICDSUSER and UICDSPASS are now COREUSER and COREPASS
+
+OpenDJ:
+changed default ping tries from 5 to 10

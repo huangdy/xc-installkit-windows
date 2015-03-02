@@ -1,0 +1,59 @@
+	<!-- view container (outer) -->
+	<div id="status">
+
+	<!-- row -->
+  	<div class="row">
+
+		<!-- view navigation -->
+		<div class="col-md-3">
+
+			<!-- action menu -->
+			<div>
+				<ul class="nav">
+				  <li class="dropdown">
+				    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+				      Action <b class="caret"></b>
+				    </button>
+				    <ul class="dropdown-menu">		    
+						<li ng-click="refresh()"><a>Refresh</a></li>
+				    </ul>
+				  </li>
+				</ul>
+			</div>
+
+				<!-- core list -->
+				<div ng-repeat="core in coreList" class="panel-group" id="accordion">
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+						    <h4 class="panel-title">
+						    	<span ng-switch on="core.OnlineStatus[0].text">
+							    	<img ng-switch-when="Online" alt="online" src="/uicds/managementconsole/app/img/available.gif">
+							    	<img ng-switch-when="Offline" alt="offline" src="/uicds/managementconsole/app/img/unavailable.gif">
+									<img ng-switch-default alt="unknown" src="/uicds/managementconsole/app/img/unknown.gif" >
+						    	</span>
+						    	<b>Core:</b> {{core.name[0].text}}
+						    </h4>
+					    </div>
+
+					      <div class="panel-body">
+					      	<b>Status:</b> {{core.OnlineStatus[0].text}} <br />
+					      	<span ng-show="core.Latitude[0].text"><b>Location:</b> {{core.Latitude[0].text}}, {{core.Longitude[0].text}}</span>
+					      </div>
+
+					</div>
+				</div> <!-- core list -->
+
+		</div>  <!-- navigation  -->
+
+
+
+
+			<!-- detail view -->
+			<div class="col-md-9">
+					logs go here
+			</div> <!-- detail view -->
+
+		</div> <!-- row -->
+
+
+	</div> <!-- container -->

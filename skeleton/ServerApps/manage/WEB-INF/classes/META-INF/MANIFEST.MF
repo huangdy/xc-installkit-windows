@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-Description: Provides integration between the OpenDJ Commons REST
+  Adapter and Servlet APIs.
+Bundle-License: http://www.opensource.org/licenses/CDDL-1.0, http://crea
+ tivecommons.org/licenses/by-nc-nd/3.0/
+Bundle-ManifestVersion: 2
+Bundle-Name: OpenDJ Commons REST LDAP Gateway
+Bundle-SymbolicName: org.forgerock.opendj.rest2ldap-servlet
+Bundle-Vendor: ForgeRock AS
+Bundle-Version: 3.0.0.SNAPSHOT
+Export-Package: org.forgerock.opendj.rest2ldap.servlet;uses:="javax.serv
+ let,org.forgerock.opendj.ldap.requests,org.forgerock.opendj.rest2ldap,o
+ rg.forgerock.json.resource,org.forgerock.json.resource.servlet,org.forg
+ erock.opendj.ldap.responses,org.forgerock.opendj.ldap,javax.servlet.htt
+ p,org.forgerock.opendj.ldap.schema,org.codehaus.jackson.map,org.codehau
+ s.jackson,org.forgerock.json.fluent,org.forgerock.util";version="3.0.0.
+ SNAPSHOT"
+Implementation-Build: 1949
+Import-Package: javax.servlet;version="[3.0,4)",javax.servlet.http;versi
+ on="[3.0,4)",org.codehaus.jackson;version="[1.9,2)",org.codehaus.jackso
+ n.map;version="[1.9,2)",org.forgerock.json.fluent;version="[2.1,2.2)",o
+ rg.forgerock.json.resource;version="[2.1,2.2)",org.forgerock.json.resou
+ rce.servlet;version="[2.1,2.2)",org.forgerock.opendj.ldap;version="[3.0
+ ,3.1)",org.forgerock.opendj.ldap.requests;version="[3.0,3.1)",org.forge
+ rock.opendj.ldap.responses;version="[3.0,3.1)",org.forgerock.opendj.lda
+ p.schema;version="[3.0,3.1)",org.forgerock.opendj.rest2ldap;version="[3
+ .0,3.1)",org.forgerock.util;version="[1.3,2)"
+SCM-Revision: 10552

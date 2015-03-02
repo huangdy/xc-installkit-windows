@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+    <display-name>UICDS Documentation</display-name>
+
+  <!-- Define a Security Constraint on this Application -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>UICDS Documentation</web-resource-name>
+      <url-pattern>/secure/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+       <role-name>uicds-users</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+   <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>UICDS Distribution</web-resource-name>
+      <url-pattern>/dist/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+       <role-name>uicds-users</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+
+  <!-- Define the Login Configuration for this Application -->
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>UICDS Services</realm-name>
+  </login-config>
+
+  <!-- Security roles referenced by this web application -->
+  <security-role>
+    <description>
+      The role that is required to log in to UICDS
+    </description>
+    <role-name>uicds-users</role-name>
+  </security-role>
+
+</web-app>

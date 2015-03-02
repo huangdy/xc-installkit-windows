@@ -1,0 +1,204 @@
+	<!-- view container (outer) -->
+	<div id="agreements">
+	
+		<!-- row -->
+	  	<div class="row">
+
+			<!-- view navigation -->
+			<div class="col-md-3">
+
+				<!-- action menu -->
+				<div>
+					<ul class="nav nav-pills">
+					  <li class="dropdown">
+					    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+					      Action <b class="caret"></b>
+					    </button>
+					    <ul class="dropdown-menu">
+							<li ng-click="createNew()"><a>Create New Agreement</a></li>	
+							<li ng-click="rescind()"><a>Rescind Selected Agreements</a></li>
+							<li class="divider"></li>
+							<li ng-click="viewXML()"><a>View XML</a></li>
+							<li class="divider"></li>
+							<li ng-click="refresh()"><a>Refresh</a></li>	
+					    </ul>
+					  </li>
+					  <li>
+					    <button type="button" class="btn btn-primary navbar-btn " ng-click="refresh()" >
+					      <b class="glyphicon glyphicon-refresh"></b>
+					    </button>	 
+					  </li>
+					</ul>
+				</div>
+
+				<!-- item list -->
+				<div ng-repeat="agreement in agreements" class="panel-group" id="accordion">
+					  <div class="panel panel-default" ng-click="select(agreements.indexOf(agreement))">
+					    <div class="panel-heading">
+						    <div class="panel-title">
+								<!-- this checkbox is for multi-select -->
+						      	<input class="pull-right" type="checkbox" ng-model="agreement.checked" ng-change="multiSelect(agreements.indexOf(agreement))" />
+						      	<a data-toggle="collapse" data-target="#collapse-agr{{agreement.id[0].text}}">
+
+						    	<span ng-switch on="agreement.ShareRules[0].attr.enabled.value">
+							    	<img ng-switch-when="true" alt="enabled" src="/uicds/managementconsole/app/img/available.gif">
+									<img ng-switch-default alt="disabled" src="/uicds/managementconsole/app/img/unknown.gif" >
+						    	</span>
+
+						      		+ {{agreement.description[0].text}}
+						      		<span ng-show="!agreement.description[0].text">Agreement ID: {{agreement.id[0].text}}</span>
+						      	</a>
+						      	
+						    </div>
+					    </div>
+						<div id="collapse-agr{{agreement.id[0].text}}" class="panel-collapse collapse">
+						      <div class="panel-body">
+						 			<small>
+							      		{{agreement.Principals[0].LocalCore[0].text}} <br />
+						      			{{agreement.Principals[0].RemoteCore[0].text}}
+						      		</small>
+						      </div>
+						</div>
+					</div>
+				</div> <!-- item list -->
+
+			</div>  <!-- navigation  -->
+
+
+			<!-- detail view -->
+			<div class="col-md-9" >
+
+					<div class="agreement" ng-show="agreements[selected]">
+						<div class="detail">
+					<h3 ng-show="agreements[selected].id.0.text">Agreement ID {{agreements[selected].id.0.text}}</h3>
+					<h3 ng-show="!agreements[selected].id.0.text">Create New Agreement</h3>
+					<form class="form-horizontal" role="form" name="agreementForm" ng-submit="submit(agreementForm.$valid, agreements[selected])" novalidate>
+							  <div class="form-group">
+							    <label class="col-sm-2 control-label" for="agreement-from"><span class="glyphicon glyphicon-asterisk required"></span> From</label>
+							    <div class="col-sm-10">
+							    	<input placeholder="e.g. uicds@my.domain.com?ids=App1" type="text" ng-pattern="rQualifiedJID" ng-model="agreements[selected].Principals[0].LocalCore[0].text" class="form-control" id="agreement-from" name="agreement-from" required />
+							    </div>
+							  </div>
+							  <div class="form-group">
+							    <label class="col-sm-2 control-label" for="agreement-with"><span class="glyphicon glyphicon-asterisk required"></span>  With</label>
+							    <div class="col-sm-10">
+							    	<input placeholder="e.g. uicds@my.domain.com?ids=App1" type="text" ng-pattern="rQualifiedJID" ng-model="agreements[selected].Principals[0].RemoteCore[0].text" class="form-control" id="agreement-with" name="agreement-with" required />
+							    </div>
+							  </div>
+
+							  <div class="form-group">
+							    <label class="col-sm-2 control-label" for="description">Description</label>
+							    <div class="col-sm-10">
+							    	<input placeholder="Brief description of this agreement." type="text" ng-maxlength="256" maxlength="256" ng-model="agreements[selected].description[0].text" class="form-control" id="description" name="description" />
+							    </div>
+							  </div>							  
+						
+							<div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+									<button ng-show="agreements[selected].action == 'create'" type="submit" class="btn btn-primary btn-sm" ng-disabled="agreementForm.$invalid">Create Agreement</button>
+									<button ng-show="agreements[selected].action != 'create'" type="submit" class="btn btn-primary btn-sm" ng-disabled="agreementForm.$invalid">Update Agreement</button>
+									<small class="pull-right"><span class="glyphicon glyphicon-asterisk required"></span> Indicates a required field.</small>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<label>
+										<input type="checkbox" ng-model="agreements[selected].ShareRules[0].attr.enabled.value"/>Enable Sharing <span class="addremove">[ <a href="" ng-click="addShareRule(agreements[selected])">Add New Rule</a> ]</span>
+									</label>
+								</div>
+							</div>
+
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+
+						<div ng-repeat="shareRule in agreements[selected].ShareRules[0].ShareRule" class="detail well">
+							<div>
+								<label>
+									<input type="checkbox" ng-model="shareRule.attr.enabled.value" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value"/>Enable Rule
+									<input size=50 placeholder="rule description (optional)" type="text" ng-model="shareRule.attr.name.value" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/>
+									<span class="addremove">[ <a href="" ng-click="removeShareRule(agreements[selected], shareRule)">Remove Rule</a> ]</span>
+								</label>
+							</div>
+
+							<div ng-repeat="condition in shareRule.Condition" style="border-left: 5px solid #ccd4d9;" >
+									<div>
+										<div class="detail">
+										    <label>Incident Type
+												<select ng-change="updateIncidentType(condition.InterestGroup[0])" ng-model="condition.InterestGroup[0].attr.label.value" ng-options="item.label as item.label for item in incidentTypeOptions" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value" id="incident-type">
+												</select>
+											</label>
+										</div>
+									</div>
+
+								<div class="detail">
+									<label>Extended Metadata
+										<span class="addremove">[ <a href="" ng-click="addExtendedMetadata(condition)">Add</a> ]</span>
+									</label>
+
+									<div ng-repeat="extendedMetadata in condition.ExtendedMetadata" class="detailItem">
+<!-- 										<select  ng-change="updateExMetadata(extendedMetadata)" ng-model="extendedMetadata.attr.label.value" ng-options="item.label as item.label for item in exMetadataOptions" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value" >
+										    <option value="">Select Metadata Type</option>
+										</select> -->
+
+
+										<select  ng-change="updateExMetadata(extendedMetadata)" ng-model="extendedMetadata.attr.label.value" ng-options="item.label as item.label for item in exMetadataOptions" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value" >
+										    <option value="">Select Metadata Type</option>
+										</select>
+
+										&nbsp;matching value
+									  <input size="25" placeholder="metadata value" type="text" ng-model="extendedMetadata.text" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/>
+									  [ <a href="" ng-click="removeExtendedMetadata(condition, extendedMetadata)">Remove</a>  ]
+									</div>
+								</div>
+
+<!-- 								<div>
+									<div class="detail">
+										<label>Extended Metadata
+										<span class="addremove">[ <a href="" ng-click="addExtendedMetadata(condition)">Add</a> ]</span>
+										</label>
+										<div class="detail">
+											
+										   <select ng-model="selectedItemEX" ng-options="item as item.label for item in exMetadataOptions"></select>
+								
+				 						<div ng-repeat="extendedMetadata in condition.ExtendedMetadata" class="detailItem">
+					 						<select  ng-model="selectedExtendedMetadata" ng-options="item.label as item.label for item in exMetadataOptions" >
+												    <option value="">Select Metadata Type</option>
+												</select>
+
+
+
+												&nbsp;matching value
+											  <input size="25" placeholder="metadata value" type="text" ng-model="extendedMetadata.text" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/>
+											  [ <a href="" ng-click="removeExtendedMetadata(condition, extendedMetadata)">Remove</a>  ]
+										</div>
+										</div>
+ 								</div> -->
+
+
+								<div class="detail">
+									<label>Proximity
+									<span class="addremove">[ <a href="" ng-click="addRemoteCoreProximity(condition)">Add</a>
+									| <a href="" ng-click="removeRemoteCoreProximity(condition)">Remove</a> ]</span>
+									</label>
+									<div ng-repeat="proximity in condition.RemoteCoreProximity" class="detailItem">
+										<label><input type="checkbox" ng-model="proximity.attr.shareOnNoLoc.value" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/> Share to cores not publishing location?</label>
+										<br />
+										<label>Distance 
+											<input size=10 type="text" ng-model="proximity.text" ng-disabled="!agreements[selected].ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value" /> km</label>
+									</div>
+								</div>
+
+							</div> <!-- Condition -->
+						</div> <!-- shareRule -->
+					</div>
+					
+
+				</div> <!-- agreement -->
+					
+			</div> <!-- detail view -->
+
+		</div> <!-- row -->
+
+
+	</div> <!-- container -->

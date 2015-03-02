@@ -1,0 +1,210 @@
+	<div id="users">
+	<!-- container header -->
+
+	<!-- row -->
+  	<div class="row">
+
+		<!-- view navigation -->
+		<div class="col-md-3">
+
+			<!-- action menu -->
+			<div>
+				<ul class="nav nav-pills">
+				  <li class="dropdown">
+				    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+				      Action <b class="caret"></b>
+				    </button>
+				    <ul class="dropdown-menu">
+						<li ng-click="showNewUserForm()"><a>Create New User</a></li>
+						<li ng-click="showNewGroupForm()"><a>Create New Group</a></li>
+						<li ng-show="selectedItem.action != 'create' &amp;&amp; selectedItem.displayName != 'uicds-admins' &amp;&amp; selectedItem.displayName != 'uicds-users'" ng-click="deleteSelectedGroups()"><a>Delete Selected Groups</a></li>
+						<li class="divider"></li>				    
+						<li ng-click="refresh()"><a>Refresh</a></li>
+				    </ul>
+				  </li>
+					  <li>
+					    <button type="button" class="btn btn-primary navbar-btn " ng-click="refresh()" >
+					      <b class="glyphicon glyphicon-refresh"></b>
+					    </button>	 
+					  </li>				  
+				</ul>
+			</div>
+			
+
+			<!-- users list -->
+
+			<div class="panel-group" id="accordion">
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title" ng-click="selectGroup(group)">
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse-all-users">+
+								All Users</a>
+					    </h4>
+				    </div>
+				
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse-all-users" class="panel-collapse collapse">
+				      <div class="panel-body">
+					        <ul ng-repeat="user in users" style="cursor:default">
+					        	<li><a ng-click="selectUser(user)">{{user.displayName}}</a></li>
+					  	    </ul>
+				      </div>
+				    </div> 
+
+				</div>
+			</div> <!-- groups list -->
+
+			<div ng-repeat="group in groups | orderBy: 'displayName'" class="panel-group" id="accordion">
+
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title" ng-click="selectGroup(group)">
+							<!-- this checkbox is for multi-select -->
+					      	<input ng-show="group.displayName != 'uicds-admins' &amp;&amp; group.displayName != 'uicds-users'" class="pull-right" type="checkbox" ng-model="group.checked" ng-change="multiSelect(group)" />						    
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse{{group.displayName}}">+
+								{{group.displayName}}</a>
+					    </h4>
+				    </div>
+				
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse{{group.displayName}}" class="panel-collapse collapse">
+				      <div class="panel-body">
+					        <ul ng-repeat="user in group.members  | orderBy: 'displayName'" style="cursor:default">
+					        	<li><a ng-click="selectUser(user)">{{user.displayName}}</a></li>
+					  	    </ul>
+				      </div>
+				    </div> 
+
+				</div>
+			</div> <!-- groups list -->
+
+		</div>  <!-- navigation  -->
+
+
+		<!-- account detail view -->
+		<div class="col-md-9" ng-show="selectedItem._type == 'inetOrgPerson'">
+
+			<div class="detail">
+				<h3>User: {{selectedItem.displayName}}</h3>
+				<div class="detailItem">
+				<form class="form-horizontal" role="form" name="userForm" ng-submit="createUser(userForm.$valid)" novalidate>
+					  <div class="form-group"  ng-show="selectedItem.action == 'create'" ng-class="{ 'has-error' : userForm.account.$invalid && !userForm.account.$pristine }">
+					    <label class="col-sm-2 control-label" for="account"><span class="glyphicon glyphicon-asterisk required"></span> Account</label>
+					    <div class="col-sm-10">
+					    	<input ng-model="selectedItem.displayName" type="text" class="form-control" name="account" id="account" placeholder="account name" required ng-pattern="rAlphanumericNoSpaces" >
+					    	<p ng-show="userForm.account.$invalid && !userForm.account.$pristine" class="help-block">A unique name consisting of only letters and numbers (no spaces or special characters) is required.</p>
+					    </div>
+					  </div>
+					  <div class="form-group"  ng-show="selectedItem.action != 'create'">
+					    <label class="col-sm-2 control-label" for="account">Account</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.displayName" type="text" class="form-control" id="account" placeholder="account name"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="created">Created</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.meta.created" type="text" class="form-control" id="created"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="updated">Updated</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.meta.lastModified" type="text" class="form-control" id="updated"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="latitude">Latitude</label>
+					    <div class="col-sm-10"><input ng-model="selectedItem.latitude" type="text" class="form-control" id="latitude" placeholder="decimal latitude"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="longitude">Longitude</label>
+					    <div class="col-sm-10"><input ng-model="selectedItem.longitude" type="text" class="form-control" id="longitude" placeholder="decimal longitude"></div>
+					  </div>
+					  <div ng-show="selectedItem.displayName != 'admin' &amp;&amp; selectedItem.displayName != 'uicds'" class="form-group">
+					    <label class="col-sm-2 control-label" for="password"><span ng-show="selectedItem.action == 'create'" class="glyphicon glyphicon-asterisk required"></span> Set New Password</label>
+					    <div class="col-sm-10"><input ng-model="selectedItem.password" type="password" class="form-control" id="password" required = "selectedItem.action == 'create'">
+					    <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Please enter a password for this new user.</p>
+					    </div>
+					  </div>
+
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+					    	<div ng-show="selectedItem.action == 'create'">
+							<button  type="submit" class="btn btn-primary btn-sm" ng-disabled="userForm.$invalid">Create User</button>
+							<small class="pull-right"><span class="glyphicon glyphicon-asterisk required"></span> Indicates a required field.</small>
+							</div>
+							<button ng-show="selectedItem.action != 'create'" type="button" class="btn btn-primary btn-sm"  ng-click="updateUser(selectedItem)">Update User</button>
+							<button ng-show="selectedItem.action != 'create' &amp;&amp; selectedItem.displayName != 'admin' &amp;&amp; selectedItem.displayName != 'uicds'" type="button" class="btn btn-primary btn-sm" ng-click="deleteUser(selectedItem)">Delete User</b>
+							</button>
+						</div>
+					</div>
+				</form>
+				</div>
+
+			</div>
+
+		</div> <!-- detail view -->
+
+
+		<!-- group detail view -->
+		<div class="col-md-9" ng-show="selectedItem._type == 'groupOfUniqueNames'">
+
+			<div class="detail">
+				<h3>Group: {{selectedItem.displayName}}</h3>
+				<div class="detailItem">
+				<form class="form-horizontal" role="form" name="groupForm" ng-submit="createGroup(groupForm.$valid)" novalidate>
+					  <div class="form-group"  ng-show="selectedItem.action == 'create'" ng-class="{ 'has-error' : groupForm.account.$invalid && !groupForm.account.$pristine }">
+					    <label class="col-sm-2 control-label" for="account"><span class="glyphicon glyphicon-asterisk required"></span> Group Name</label>
+					    <div class="col-sm-10">
+					    	<input ng-model="selectedItem.displayName" type="text" class="form-control" name="account" id="account" placeholder="account name" required ng-pattern="rAlphanumericNoSpaces" >
+					    	<p ng-show="userForm.account.$invalid && !userForm.account.$pristine" class="help-block">A unique name consisting of only letters and numbers (no spaces or special characters) is required.</p>
+					    </div>
+					  </div>
+					  <div class="form-group"  ng-show="selectedItem.action != 'create'">
+					    <label class="col-sm-2 control-label" for="account">Group Name</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.displayName" type="text" class="form-control" id="account" placeholder="account name"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="created">Created</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.meta.created" type="text" class="form-control" id="created"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="updated">Updated</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.meta.lastModified" type="text" class="form-control" id="updated"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="latitude">Latitude</label>
+					    <div class="col-sm-10"><input ng-model="selectedItem.latitude" type="text" class="form-control" id="latitude" placeholder="decimal latitude"></div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="longitude">Longitude</label>
+					    <div class="col-sm-10"><input ng-model="selectedItem.longitude" type="text" class="form-control" id="longitude" placeholder="decimal longitude"></div>
+					  </div>
+
+					  <div class="form-group">
+						  <div class="col-sm-offset-2 col-sm-10">
+							<b>Select Group Members</b>
+							<div ng-repeat="user in users | orderBy: 'displayName'">
+								<div class="checkbox">
+								  <label>
+								   <input type="checkbox" value="{{user.displayName}}" ng-checked="selectedUsers.indexOf(user.displayName) > -1" ng-click="toggleUser(user.displayName)">{{user.displayName}}
+								  </label>
+								</div>
+							</div>
+							</div>
+						</div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+							<div ng-show="selectedItem.action == 'create'">
+								<button  type="submit" class="btn btn-primary btn-sm" ng-disabled="groupForm.$invalid">Create Group</button>
+								<small class="pull-right"><span class="glyphicon glyphicon-asterisk required"></span> Indicates a required field.</small>
+							</div>
+							<button ng-show="selectedItem.action != 'create'" type="button" class="btn btn-primary btn-sm"  ng-click="updateGroup(selectedItem)">Update Group</button>
+							<button ng-show="selectedItem.action != 'create' &amp;&amp; selectedItem.displayName != 'uicds-admins' &amp;&amp; selectedItem.displayName != 'uicds-users'" type="button" class="btn btn-primary btn-sm"  ng-click="deleteGroup(selectedItem)">Delete Group</button>
+						</div>
+					</div>
+
+					</form>
+
+		</div> <!-- detail view -->
+
+	</div> <!-- row -->
+
+</div> <!-- container -->

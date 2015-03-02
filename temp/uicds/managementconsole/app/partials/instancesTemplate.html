@@ -1,0 +1,232 @@
+	<div id="instances">
+	<!-- container header -->
+
+	<!-- row -->
+  	<div class="row">
+
+		<!-- view navigation -->
+		<div class="col-md-3">
+
+			<!-- action menu -->
+			<div>
+				<ul class="nav nav-pills">
+				  <li class="dropdown">
+				    <button type="button" class="btn btn-primary navbar-btn dropdown-toggle" data-toggle="dropdown">
+				      Action <b class="caret"></b>
+				    </button>
+				    <ul class="dropdown-menu">
+				    	<li ng-click="showNewProfileForm()"><a>Create New Resource Profile</a></li>
+						<li ng-click="showNewInstanceForm()"><a>Create New Resource Instance</a></li>
+						<li class="divider"></li>				    
+						<li ng-click="refresh()"><a>Refresh</a></li>
+				    </ul>
+				  </li>
+					  <li>
+					    <button type="button" class="btn btn-primary navbar-btn " ng-click="refresh()" >
+					      <b class="glyphicon glyphicon-refresh"></b>
+					    </button>	 
+					  </li>				  
+				</ul>
+			</div>
+	
+			<!-- All profiles -->
+
+				<div class="panel-group" id="accordion">
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title">
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse-all-profiles">+
+								Resource Profiles</a>
+					    </h4>
+				    </div>
+				
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse-all-profiles" class="panel-collapse collapse">
+				      <div class="panel-body">
+					        <ul ng-repeat="profile in profiles" style="cursor:default">
+					        	<li><a ng-click="selectProfileByID(profile.ID[0].text)">{{profile.ID[0].text}}</a></li>
+					  	    </ul>
+				      </div>
+				    </div> 
+
+				</div>
+			</div> <!-- groups list -->		
+
+
+			<!-- All instances -->
+
+				<div class="panel-group" id="accordion">
+				  <div class="panel panel-default">
+				    <div class="panel-heading" style="cursor:default">
+					    <h4 class="panel-title">
+					    	<!-- this link makes the boxes collapsible -->
+					    	<a data-toggle="collapse" data-target="#collapse-all-instances">+
+								Resource Instances</a>
+					    </h4>
+				    </div>
+				
+				    <!-- extended, collapsible data panel -->
+				    <div id="collapse-all-instances" class="panel-collapse collapse">
+				      <div class="panel-body">
+					        <ul ng-repeat="instance in instances" style="cursor:default">
+					        	<li><a ng-click="selectInstanceByID(instance.ID[0].text)">{{instance.ID[0].text}}</a></li>
+					  	    </ul>
+				      </div>
+				    </div> 
+
+				</div>
+			</div> <!-- groups list -->		
+
+		</div>  <!-- navigation  -->
+
+		<!-- profile detail view -->
+		<div class="col-md-9" ng-show="selectedItem.type=='profile'">
+		
+			<div class="detail">
+				<h3>Resource Profile: {{selectedItem.ID[0].text}}</h3>
+				<div class="detailItem">
+				<form class="form-horizontal" role="form" name="profileForm" ng-submit="createProfile(profileForm.$valid)" novalidate>
+
+					<div  ng-show="selectedItem.action == 'create'">
+					  <div class="form-group"  ng-show="selectedItem.action == 'create'" ng-class="{ 'has-error' : profileForm.identity.$invalid && !profileForm.identity.$pristine }">
+					    <label class="col-sm-2 control-label" for="identity"><span class="glyphicon glyphicon-asterisk required"></span> ID</label>
+					    <div class="col-sm-10">
+					    	<input ng-model="selectedItem.ID[0].text" type="text" class="form-control" name="identity" id="identity" placeholder="Unique resource profile ID" required ng-pattern="rAlphanumericNoSpaces">
+			    	        <p ng-show="profileForm.identity.$invalid && !profileForm.identity.$pristine" class="help-block">A unique name consisting of only letters and numbers (no spaces or special characters) is required.</p>
+						</div>
+
+					  </div>
+					 <div class="form-group">
+					    <label class="col-sm-2 control-label" for="description">Description</label>
+					    <div class="col-sm-10"><textarea ng-model="selectedItem.Description[0].text" type="text" class="form-control" id="description" placeholder="Resource profile description"></textarea></div>
+					  </div>
+
+					  <div class="form-group" >
+					    <label class="col-sm-2 control-label" for="interest"><span class="glyphicon glyphicon-asterisk required"></span> Interest</label>
+					    <div class="col-sm-10"><select class="form-control" name="interest" id="interest" ng-model="selectedItem.Interests[0].Interest[0].TopicExpression[0].text" data-ng-options="productType for productType in productTypes" required>                
+						</select></div>
+					</div>					  
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+							<button  type="submit" class="btn btn-primary btn-sm" ng-disabled="profileForm.$invalid"  >Create Profile</button>
+							<small class="pull-right"><span class="glyphicon glyphicon-asterisk required"></span> Indicates a required field.</small>
+						</div>	
+						</div>		  
+					</div>
+
+					<div  ng-show="selectedItem.action != 'create'">
+					  <div class="form-group"  ng-show="selectedItem.action != 'create'">
+					    <label class="col-sm-2 control-label" for="identity">ID</label>
+					    <div class="col-sm-10"><input readonly ng-model="selectedItem.ID[0].text" type="text" class="form-control" id="identity" placeholder="Unique resource profile ID"></div>
+					  </div>				
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="description">Description</label>
+					    <div class="col-sm-10"><textarea readonly ng-model="selectedItem.Description[0].text" type="text" class="form-control" id="description" placeholder="Resource profile description"></textarea></div>
+					  </div>
+
+					  <div ng-repeat="interest in selectedItem.Interests[0].Interest" style="cursor:default">
+						  <div class="form-group" >
+						    <label class="col-sm-2 control-label" for="productType">Product Interest</label>
+						    <div class="col-sm-5"><input readonly ng-model="interest.TopicExpression[0].text" type="text" class="form-control" id="productType"></div>
+						    <div class="col-sm-5"><button type="button" class="btn btn-danger btn-sm"  ng-click="deleteInterest(selectedItem.ID[0].text, interest.TopicExpression[0].text)">Remove Interest</button>
+						    </div>
+						  </div>
+						</div>
+
+					  <div class="form-group" >
+					    <label class="col-sm-2 control-label" for="newInterest"></label>
+					    <div class="col-sm-5"><select class="form-control" id="newInterest" ng-model="selectedItem.newInterest" data-ng-options="productType for productType in productTypes">                
+						</select></div>
+						<div class="col-sm-5">
+							<button type="button" class="btn btn-success btn-sm"  ng-click="addInterest(selectedItem.ID[0].text, selectedItem.newInterest)">Add Interest</button>
+						</div>
+
+					</div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+							<button type="button" class="btn btn-primary btn-sm"  ng-click="deleteProfile(selectedItem.ID[0].text)">Delete Profile</button>
+						</div>
+					</div>
+					</div>
+				</form>
+				</div>
+
+			</div>
+
+
+		</div> <!-- detail view -->
+
+		<!-- instance detail view -->
+		<div class="col-md-9" ng-show="selectedItem.type=='instance'">
+			<div class="detail">
+				<h3>Resource Instance: {{selectedItem.ID[0].text}}</h3>
+				<div class="detailItem">
+				<form class="form-horizontal" role="form" name="instanceForm" ng-submit="createInstance(instanceForm.$valid)" novalidate>
+					<div ng-show="selectedItem.action == 'create'">
+						  
+						  <div class="form-group" ng-class="{ 'has-error' : instanceForm.instanceID.$invalid && !instanceForm.instanceID.$pristine }">
+						    <label class="col-sm-2 control-label" for="instanceID" ><span class="glyphicon glyphicon-asterisk required"></span> ID</label>
+						    <div class="col-sm-10">
+						    	<input ng-model="selectedItem.ID[0].text" type="text" class="form-control" name="instanceID" id="instanceID" placeholder="Unique resource instance ID" required ng-pattern="rAlphanumericNoSpaces" />
+								<p ng-show="instanceForm.instanceID.$invalid && !instanceForm.instanceID.$pristine" class="help-block">A unique name consisting of only letters and numbers (no spaces or special characters) is required.</p>
+							</div>
+						  </div>
+
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label" for="profile"><span class="glyphicon glyphicon-asterisk required"></span> Profile</label>
+					    <div class="col-sm-10"><select class="form-control" id="profile" ng-model="selectedItem.ProfileIDs[0].ProfileID[0].text" data-ng-options="profile.ID[0].text as profile.ID[0].text for profile in profiles">                
+						</select></div>
+					  </div>
+
+
+					 </div>			  
+					  <div ng-show="selectedItem.action != 'create'">	
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="identity">ID</label>
+						    <div class="col-sm-10"><input readonly ng-model="selectedItem.ID[0].text" type="text" class="form-control" id="identity" placeholder="Unique resource instance ID"></div>
+						  </div>				
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="description">Description</label>
+						    <div class="col-sm-10"><input readonly ng-model="selectedItem.Description[0].text" type="text" class="form-control" id="description" placeholder="Resource instance description"></div>
+						  </div>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="profile">Profile</label>
+						    <div class="col-sm-10"><input readonly ng-model="selectedItem.ProfileIDs[0].ProfileID[0].text" type="text" class="form-control" id="profile" placeholder="Resource profile ID"></div>
+						  </div>						  		  
+							<div class="form-group">
+							    <label class="col-sm-2 control-label" for="endpoint">Endpoint</label>
+							    <div class="col-sm-10"><input readonly ng-model="selectedItem.Endpoints[0].Endpoint[0].Address[0].text" type="text" class="form-control" id="endpoint"></div>
+						  	</div>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label" for="count">Notifications</label>
+						    <div class="col-sm-10">
+						    <input readonly ng-model="selectedItem.Endpoints[0].Endpoint[0].attr.notificationCount.value" type="text" class="form-control" id="count">
+						    </div>
+					  	</div>
+					  	</div>
+
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+							<div ng-show="selectedItem.action == 'create'">
+								<button  type="submit" class="btn btn-primary btn-sm"  ng-disabled="instanceForm.$invalid" >Create Instance</button>
+								<small class="pull-right"><span class="glyphicon glyphicon-asterisk required"></span> Indicates a required field.</small>
+							</div>
+
+							<div ng-show="selectedItem.action != 'create'">
+								<button  type="button" class="btn btn-primary btn-sm"  ng-click="deleteInstance(selectedItem.ID[0].text)">Delete Instance</b>
+								</button>
+<!-- 								<button ng-show="selectedItem.action != 'create'" type="button" class="btn btn-primary btn-sm pull-right"  ng-click="clearCount(selectedItem)">Clear Notifications</button> -->
+							</div>
+
+						</div>
+					</div>
+
+				</form>
+				</div>
+		</div> <!-- detail view -->
+
+	</div> <!-- row -->
+
+</div> <!-- container -->
+

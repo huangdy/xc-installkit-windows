@@ -1,0 +1,213 @@
+<!doctype html>
+<html ng-app>
+	<head>
+		<title>Admin Console</title>
+
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- load bootstrap css -->
+		<link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+		<!-- HTML5 shim and respond.js, for IE6-8 support of HTML5 elements and CSS media queries -->
+		<!--[if lt IE 9]>
+		  <script src="libs/html5shiv/html5shiv.js"></script>
+		  <script src="libs/respond/respond.min.js"></script>
+		<![endif]-->
+
+		<!-- load jQuery -->
+		<script type="text/javascript" src="libs/jquery/jquery-1.10.2.min.js"></script>
+
+		<!-- load the Angular.js library -->
+		<script src="libs/angular/angular.min.js"></script>
+
+		<!-- load the twitter bootstrap javascript (depends on jQuery) -->
+		<script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+
+		<!-- load the mustache templating javascript (depends on jQuery) -->
+        <script type="text/javascript" src="libs/mustache/mustache.js"></script>
+
+		<!-- load xml utilities -->
+		<script type="text/javascript" src="libs/xmlToJSON/xmlToJSON.min.js"></script>
+		<script type="text/javascript" src="util.js"></script>
+
+		<!-- load service specific behaviors -->
+		<script type="text/javascript" src="agreements.js"></script>
+		<script type="text/javascript" src="workproducts.js"></script>
+
+		<script type="text/javascript" src="globals.js"></script>
+
+		<script type="text/javascript" src="libs/logout/logout.js"></script>
+
+
+		<!-- style settings -->
+		<style>
+			h1 {
+				font-size: 1.75em;
+				display: inline-block;
+			}
+			h2, h3 {
+				font-size: 1.25em;
+				display: inline-block;
+			}
+
+			input {
+				padding-left: .5em;
+			}
+
+			.addremove {
+				font-size: 1em;
+				padding-left: 1em;
+			}
+
+			.underline {
+				background-color: transparent;
+				border-style: solid;
+				border-width: 0px 0px 2px 0px;
+				border-color: black
+			}
+
+			.well {
+				padding-top: 0px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+	<div class="container page">
+
+    <!-- Docs master nav -->
+	<div class="navbar navbar-inverse" role="banner">
+	  <div class="container">
+		<div class="navbar-header">
+		  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a href="#" class="navbar-brand" style="padding: 5px 20px">Keystone Admin Console<br /><span style="font-size: .75em"><script>document.write(globals.coreAddress)</script></span></a>
+		</div>
+		<div class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+		  <ul class="nav navbar-nav" id="main-nav">
+			<li class="active">
+			  <a href="#agreements" data-toggle="pill">Status &amp; Agreements</a>
+			</li>
+			<li>
+			  <a href="#other" data-toggle="pill">Interest Groups &amp; Workproducts</a>
+			</li>
+			<li>
+			  <a href="#other" data-toggle="pill">Profile &amp; Resources</a>
+			</li>
+		  </ul>
+		</div>
+	  </div>
+	</div>
+
+
+
+<div id="tabcontent" class="tab-content">
+
+		<div id="other" class="tab-pane">
+			Not yet implemented...
+		</div>
+
+		<div id="agreements" class="tab-pane active" ng-controller="AgreementController" data-ng-init="init()">
+
+			<div class="col-md-3 agreement-list">
+				<div>
+					<button type="button" class="btn btn-primary btn-sm"  ng-click="refresh()">Refresh</button>
+					<button type="button" class="btn btn-primary btn-sm"  ng-click="createNew()">Create New</button>
+				</div>
+				<br />
+				<div ng-repeat="agreement in agreements" class="list-group">
+					<!--<a href="#" class="list-group-item" ng-click="section(agreements.indexOf(agreement))">{{agreement.Principals[0].RemoteCore[0].text}}</a>-->
+					<a href="#" class="list-group-item" ng-click="section(agreements.indexOf(agreement))">{{agreement.Principals[0].LocalCore[0].text}}<br />{{agreement.Principals[0].RemoteCore[0].text}}</a>
+				</div>
+			</div> <!-- agreement-list -->
+
+			<div class="col-md-9 agreement-view">
+
+				<div ng-repeat="agreement in agreements" >
+
+					<div class="agreement" ng-show="is(agreements.indexOf(agreement))" >
+						<div class="heading">
+							<h1>Agreement from <input size="55" placeholder="e.g. uicds@my.domain.com?ids=App1" type="text" ng-model="agreement.Principals[0].LocalCore[0].text"/> </h1>
+
+							<h1>Agreement with  <input size="55" placeholder="e.g. uicds@my.domain.com?groups=Group2&ids=App3,App4" type="text" ng-model="agreement.Principals[0].RemoteCore[0].text"/> </h1>
+						</div>
+
+						<button type="button" class="btn btn-primary btn-sm"  ng-click="submit(agreement)">Submit Agreement</button>
+						<button type="button" class="btn btn-primary btn-sm"  ng-click="rescind(agreement)">Rescind Agreement</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-warning btn-sm"  ng-click="debug(agreement)">Debug</button>
+						<button type="button" class="btn btn-warning btn-sm pull-right"  ng-click="viewXML(agreement)">View XML</button>
+
+						<div class="heading">
+							<input type="checkbox" ng-model="agreement.ShareRules[0].attr.enabled.value"/>
+							<h2>Enable Sharing </h2><span class="addremove">[ <a href="" ng-click="addShareRule(agreement)">Add New Rule</a> ]</span>
+						</div>
+
+						<div ng-repeat="shareRule in agreement.ShareRules[0].ShareRule" class="well">
+							<div class="heading">
+								<input type="checkbox" ng-model="shareRule.attr.enabled.value" ng-disabled="!agreement.ShareRules[0].attr.enabled.value"/>
+								<h3>Enable Rule </h3>
+								<input size="50" placeholder="custom rule id (optional)" type="text" ng-model="shareRule.attr.id.value" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/>
+								<span class="addremove">[ <a href="" ng-click="removeShareRule(agreement, shareRule)">Remove Rule</a> ]</span>
+							</div>
+
+							<div ng-repeat="condition in shareRule.Condition" style="border-left: 5px solid #ccd4d9; padding-left: 20px;" >
+								<div class="heading"><h3>Incident Type </h3></div>
+
+								<div >
+									<select ng-change="updateIncidentType(condition.InterestGroup[0])" ng-model="condition.InterestGroup[0].attr.label.value" ng-options="item.label as item.label for item in incidentTypeOptions" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value">
+									</select>
+
+								</div>
+
+								<div class="heading">
+									<h3>Extended Metadata </h3>
+									<span class="addremove">[ <a href="" ng-click="addExtendedMetadata(condition)">Add</a>
+									| <a href="" ng-click="removeExtendedMetadata(condition, extendedMetadata)">Remove</a> ]</span>
+								</div>
+
+								<div ng-repeat="extendedMetadata in condition.ExtendedMetadata">
+									<select  ng-change="updateExMetadata(extendedMetadata)" ng-model="extendedMetadata.attr.label.value" ng-options="item.label as item.label for item in exMetadataOptions" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value" >
+									    <option value="">Select Metadata Type</option>
+									</select>
+
+									&nbsp;matching value
+								  <input size="25" placeholder="metadata value" type="text" ng-model="extendedMetadata.text" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/>
+								</div>
+
+								<div class="heading">
+									<h3>Proximity </h3>
+									<span class="addremove">[ <a href="" ng-click="addRemoteCoreProximity(condition)">Add</a>
+									| <a href="" ng-click="removeRemoteCoreProximity(condition)">Remove</a> ]</span>
+								</div>
+								<div ng-repeat="proximity in condition.RemoteCoreProximity">
+									share to cores not publishing location: <input type="checkbox" ng-model="proximity.attr.shareOnNoLoc.value" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/> <br />
+									distance: <input type="text" ng-model="proximity.text" ng-disabled="!agreement.ShareRules[0].attr.enabled.value || !shareRule.attr.enabled.value"/> km<br />
+								</div>
+							</div> <!-- Condition -->
+						</div> <!-- shareRule -->
+
+				</div> <!-- agreement -->
+
+			</div> <!-- agreements -->
+
+			</div> <!-- agreement-view -->
+
+
+		</div> <!-- agreement controller -->
+
+	</div> <!-- tab content -->
+
+	</div> <!-- page container -->
+
+
+	</body>
+
+</html>

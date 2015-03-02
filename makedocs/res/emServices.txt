@@ -1,0 +1,10 @@
+Alert Service;https://127.0.0.1/uicds/core/ws/services/AlertService.wsdl
+Broadcast Service;https://127.0.0.1/uicds/core/ws/services/BroadcastService.wsdl
+IAP Service;https://127.0.0.1/uicds/core/ws/services/IAPService.wsdl
+Incident Command Service;https://127.0.0.1/uicds/core/ws/services/IncidentCommandService.wsdl
+Incident Management Service;https://127.0.0.1/uicds/core/ws/services/IncidentManagementService.wsdl
+LEITSC Service;https://127.0.0.1/uicds/core/ws/services/LEITSCService.wsdl
+Map Service;https://127.0.0.1/uicds/core/ws/services/MapService.wsdl
+Resource Management Service;https://127.0.0.1/uicds/core/ws/services/ResourceManagementService.wsdl
+Sensor Service;https://127.0.0.1/uicds/core/ws/services/SensorService.wsdl
+Tasking Service;https://127.0.0.1/uicds/core/ws/services/TaskingService.wsdl

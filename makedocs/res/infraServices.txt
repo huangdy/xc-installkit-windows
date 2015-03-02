@@ -1,0 +1,8 @@
+Agreement Service;https://127.0.0.1/uicds/core/ws/services/AgreementService.wsdl
+Directory Service;https://127.0.0.1/uicds/core/ws/services/DirectoryService.wsdl
+Logging Service;https://127.0.0.1/uicds/core/ws/services/LoggingService.wsdl
+Notification Service;https://127.0.0.1/uicds/core/ws/services/NotificationService.wsdl
+Resource Instance Service;https://127.0.0.1/uicds/core/ws/services/ResourceInstanceService.wsdl
+Resource Profile Service;https://127.0.0.1/uicds/core/ws/services/ResourceProfileService.wsdl
+Resource Management Service;https://127.0.0.1/uicds/core/ws/services/ResourceManagementService.wsdl
+Work Product Service;https://127.0.0.1/uicds/core/ws/services/WorkProductService.wsdl

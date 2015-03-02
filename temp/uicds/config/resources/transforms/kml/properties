@@ -1,0 +1,4 @@
+method=xml
+mediatype=application/vnd.google-earth.kml+xml
+xquery=kml.xq
+modulens=http://uicds.org/modules/transform/kml

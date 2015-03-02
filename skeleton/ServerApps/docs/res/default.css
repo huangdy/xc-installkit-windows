@@ -1,0 +1,86 @@
+
+/* Layout definitions */
+
+.v-page { 
+	width: 99%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.v-header {
+	display: block;
+	height: 50px;
+	width: 100%;
+	float: left;
+	position: fixed;
+	text-align: center;
+	border-width: thin;
+	border-style: solid;
+	border-color: darkblue;
+	background-color: #e5ecf9;	
+}
+
+.v-sidebar {
+	margin-top: 15px;
+	float: left;
+	padding-right: 10px;
+	border-right-width: thin;
+	border-right-style: solid;
+	border-right-color: darkblue;
+	position: inherit;
+	width: 220px;
+	text-align: left;
+}
+
+.v-content {
+	padding-top: 15px;
+	padding-left: 25px;
+	margin-left: 220px;
+}
+
+.v-selected {
+	background-color:#e5ecf9;
+}
+
+/* general formatting */
+
+a.v-ext { 
+   padding-right: 15px;
+   background: transparent url(external.png) no-repeat center right;
+}
+
+.v-version {
+	font-weight:bold;
+}
+
+.v-group {
+	display: block;
+}
+
+.v-label {
+	display: block;
+	margin: 0 10 0;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.v-item {
+	display: block;
+	margin: 5 20 0;
+}
+
+.v-tag {
+	font-size: .6em;
+}
+
+.v-message {
+	display: block;
+}
+
+.v-success {
+	color: green;
+}
+
+.v-error {
+	color: red;
+}
